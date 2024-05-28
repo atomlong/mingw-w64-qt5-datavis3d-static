@@ -9,7 +9,7 @@
 
 _qt_module=qtdatavis3d
 pkgname=mingw-w64-qt5-datavis3d-static
-pkgver=5.15.13
+pkgver=5.15.14
 pkgrel=1
 arch=('any')
 pkgdesc="Qt Data Visualization module (mingw-w64)"
@@ -17,7 +17,7 @@ depends=('mingw-w64-qt5-base-static')
 optdepends=('mingw-w64-qt5-declarative-static: QML bindings')
 makedepends=('mingw-w64-gcc' 'mingw-w64-pkg-config' 'mingw-w64-qt5-declarative-static')
 license=('GPL3' 'LGPL' 'FDL' 'custom')
-_commit=6ac6d23a8f558f36f1162b419858cc44dccd4d2b
+_commit=79cd0fb6cafcd42e4037ae1363fda3bc2cec934a
 _basever=${pkgver%%+*}
 makedepends+=('git')
 options=('!strip' '!buildflags' 'staticlibs')
@@ -25,7 +25,7 @@ groups=('mingw-w64-qt5')
 url='https://www.qt.io/'
 _pkgfqn=${_qt_module}
 source=(git+https://invent.kde.org/qt/qt/$_pkgfqn#commit=$_commit)
-sha256sums=('649c0c535c76f781aeda6a7a262904c71dd438e4a4762dd2e507f696544c8c35')
+sha256sums=('26b3c03b662febb9ceee112fc1c8fd1de236ef85a7db74492f78395988757217')
 
 _architectures='i686-w64-mingw32 x86_64-w64-mingw32'
 
@@ -49,7 +49,7 @@ build() {
       msg2 "Building ${_config##*=} version for ${_arch}"
       mkdir -p build-${_arch}-${_config##*=} && pushd build-${_arch}-${_config##*=}
       ${_arch}-qmake-qt5 ../${_qt_module}.pro ${_config} ${_additional_qmake_args}
-      make -j$(nproc)
+      make
       popd
     done
   done
@@ -62,7 +62,7 @@ package() {
     for _config in "${_configurations[@]}"; do
       pushd build-${_arch}-${_config##*=}
 
-      make -j$(nproc) INSTALL_ROOT="$pkgdir" install
+      make INSTALL_ROOT="$pkgdir" install
 
       # use prl files from build directory since installed prl files seem to have incorrect QMAKE_PRL_LIBS_FOR_CMAKE
       if [[ -d 'lib' ]]; then
